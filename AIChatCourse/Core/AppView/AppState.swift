@@ -7,36 +7,37 @@
 import SwiftUI
 
 @Observable
+@MainActor
 class AppState {
-    
+
+    private let userDefaults: UserDefaults
+
     private(set) var showTabBar: Bool {
         didSet {
-            UserDefaults.showTabbarView = showTabBar
+            userDefaults.set(showTabBar, forKey: UserDefaults.showTabbarViewKey)
         }
     }
-    
-    init(showTabBar: Bool = UserDefaults.showTabbarView) {
-        self.showTabBar = showTabBar
+
+    init(showTabBar: Bool? = nil, userDefaults: UserDefaults = .standard) {
+        self.userDefaults = userDefaults
+        self.showTabBar = showTabBar ?? userDefaults.bool(forKey: UserDefaults.showTabbarViewKey)
     }
-    
+
     func updateViewState(showTabBarView: Bool) {
         showTabBar = showTabBarView
     }
 }
 
 extension UserDefaults {
-    
-    private struct Keys {
-        static let showTabbarView = "showTabbarView"
-    }
-    
+
+    fileprivate static let showTabbarViewKey = "showTabbarView"
+
     static var showTabbarView: Bool {
         get {
-            standard.bool(forKey: Keys.showTabbarView)
+            standard.bool(forKey: showTabbarViewKey)
         }
         set {
-            standard.set(newValue, forKey: Keys.showTabbarView)
+            standard.set(newValue, forKey: showTabbarViewKey)
         }
     }
-    
 }

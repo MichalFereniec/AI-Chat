@@ -10,6 +10,7 @@ import SwiftfulUtilities
 @MainActor
 protocol AppViewInteractor {
     var auth: UserAuthInfo? { get }
+    var showTabBar: Bool { get }
     
     func trackEvent(event: LoggableEvent)
     func logIn(user: UserAuthInfo, isNewUser: Bool) async throws
@@ -23,6 +24,10 @@ extension CoreInteractor: AppViewInteractor { }
 class AppViewModel {
     
     private let interactor: AppViewInteractor
+
+    var showTabBar: Bool {
+        interactor.showTabBar
+    }
     
     init(interactor: AppViewInteractor) {
         self.interactor = interactor

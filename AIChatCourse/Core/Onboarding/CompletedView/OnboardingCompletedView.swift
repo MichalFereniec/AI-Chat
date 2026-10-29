@@ -10,7 +10,6 @@ import SwiftUI
 struct OnboardingCompletedView: View {
     
     @State var viewModel: OnboardingCompletedViewModel
-    @Environment(AppState.self) private var appState
     var selectedColor: Color = .orange
 
     var body: some View {
@@ -31,9 +30,7 @@ struct OnboardingCompletedView: View {
                 isLoading: viewModel.isCompletingProfileSetup,
                 title: "Finish",
                 action: {
-                    viewModel.onFinishButtonPressed(selectedColor: selectedColor, onShowTabbarView: {
-                        appState.updateViewState(showTabBarView: true)
-                    })
+                    viewModel.onFinishButtonPressed(selectedColor: selectedColor)
                 }
             )
             .accessibilityIdentifier("FinishButton")

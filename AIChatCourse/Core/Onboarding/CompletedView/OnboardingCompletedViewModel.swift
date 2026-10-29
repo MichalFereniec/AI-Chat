@@ -9,6 +9,7 @@ import SwiftUI
 @MainActor
 protocol OnboardingCompletedInteractor {
     func trackEvent(event: LoggableEvent)
+    func updateViewState(showTabBarView: Bool)
     func markOnboardingCompleteForCurrentUser(profileColorHex: String) async throws
 }
 
@@ -28,7 +29,7 @@ class OnboardingCompletedViewModel {
         self.interactor = interactor
     }
         
-    func onFinishButtonPressed(selectedColor: Color, onShowTabbarView: @escaping () -> Void) {
+    func onFinishButtonPressed(selectedColor: Color) {
         isCompletingProfileSetup = true
         interactor.trackEvent(event: Event.finishStart)
         
@@ -40,7 +41,7 @@ class OnboardingCompletedViewModel {
 
                 // dismiss screen
                 isCompletingProfileSetup = false
-                onShowTabbarView()
+                interactor.updateViewState(showTabBarView: true)
             } catch {
                 showAlert = AnyAppAlert(error: error)
                 interactor.trackEvent(event: Event.finishFail(error: error))

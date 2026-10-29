@@ -153,9 +153,12 @@ struct Dependencies {
     let pushManager: PushManager
     let abTestManager: ABTestManager
     let purchaseManager: PurchaseManager
+    let appState: AppState
 
     // swiftlint:disable:next function_body_length
-    init(config: BuildConfiguration) {
+    init(config: BuildConfiguration, userDefaults: UserDefaults = .standard) {
+        appState = AppState(userDefaults: userDefaults)
+
         switch config {
         case .mock(isSignedIn: let isSignedIn):
             logManager = LogManager(services: [
@@ -218,24 +221,24 @@ struct Dependencies {
         container.register(PushManager.self, service: pushManager)
         container.register(ABTestManager.self, service: abTestManager)
         container.register(PurchaseManager.self, service: purchaseManager)
+        container.register(AppState.self, service: appState)
         self.container = container
     }
 }
 
 extension View {
-    func previewEnvironment(isSignedIn: Bool = true) -> some View {
+    func previewEnvironment(container: DependencyContainer = DevPreview.shared.container) -> some View {
         self
-            .environment(DevPreview.shared.container)
-            .environment(PurchaseManager(service: MockPurchaseService()))
-            .environment(ABTestManager(service: MockABTestService()))
-            .environment(PushManager())
-            .environment(ChatManager(service: MockChatService()))
-            .environment(AIManager(service: MockAIService()))
-            .environment(AvatarManager(service: MockAvatarService()))
-            .environment(UserManager(services: MockUserServices(user: isSignedIn ? .mock : nil)))
-            .environment(AuthManager(service: MockAuthService(user: isSignedIn ? .mock() : nil)))
-            .environment(AppState())
-            .environment(LogManager(services: []))
+            .environment(container)
+            .environment(container.resolve(PurchaseManager.self)!)
+            .environment(container.resolve(ABTestManager.self)!)
+            .environment(container.resolve(PushManager.self)!)
+            .environment(container.resolve(ChatManager.self)!)
+            .environment(container.resolve(AIManager.self)!)
+            .environment(container.resolve(AvatarManager.self)!)
+            .environment(container.resolve(UserManager.self)!)
+            .environment(container.resolve(AuthManager.self)!)
+            .environment(container.resolve(LogManager.self)!)
     }
 }
 
@@ -254,6 +257,7 @@ class DevPreview {
         container.register(PushManager.self, service: pushManager)
         container.register(ABTestManager.self, service: abTestManager)
         container.register(PurchaseManager.self, service: purchaseManager)
+        container.register(AppState.self, service: appState)
         return container
     }
     
@@ -266,8 +270,13 @@ class DevPreview {
     let pushManager: PushManager
     let abTestManager: ABTestManager
     let purchaseManager: PurchaseManager
+    let appState: AppState
     
     init(isSignedIn: Bool = true) {
+        self.appState = AppState(
+            showTabBar: isSignedIn,
+            userDefaults: UserDefaults(suiteName: "AIChatCourse.Previews")!
+        )
         self.authManager = AuthManager(service: MockAuthService(user: isSignedIn ? .mock() : nil))
         self.userManager = UserManager(services: MockUserServices(user: isSignedIn ? .mock : nil))
         self.aiManager = AIManager(service: MockAIService())

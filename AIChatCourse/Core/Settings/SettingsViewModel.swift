@@ -12,6 +12,7 @@ protocol SettingsInteractor {
     var auth: UserAuthInfo? { get }
     
     func trackEvent(event: LoggableEvent)
+    func updateViewState(showTabBarView: Bool)
     func signOut() async throws
     func deleteAccount() async throws
 }
@@ -67,7 +68,7 @@ class SettingsViewModel {
         UIApplication.shared.open(url)
     }
     
-    func onSignOutPressed(onDismiss: @escaping () async -> Void) {
+    func onSignOutPressed(onDismiss: @escaping @MainActor () async -> Void) {
         interactor.trackEvent(event: Event.signOutStart)
         
         Task {
@@ -76,6 +77,7 @@ class SettingsViewModel {
                 interactor.trackEvent(event: Event.signOutSuccess)
 
                 await onDismiss()
+                interactor.updateViewState(showTabBarView: false)
             } catch {
                 showAlert = AnyAppAlert(error: error)
                 interactor.trackEvent(event: Event.signOutFail(error: error))
@@ -99,7 +101,7 @@ class SettingsViewModel {
         )
     }
     
-    private func onDeleteAccountConfirmed(onDismiss: @escaping () async -> Void) {
+    func onDeleteAccountConfirmed(onDismiss: @escaping @MainActor () async -> Void) {
         interactor.trackEvent(event: Event.deleteAccountStartConfirm)
 
         Task {
@@ -108,6 +110,7 @@ class SettingsViewModel {
                 interactor.trackEvent(event: Event.deleteAccountSuccess)
 
                 await onDismiss()
+                interactor.updateViewState(showTabBarView: false)
             } catch {
                 showAlert = AnyAppAlert(error: error)
                 interactor.trackEvent(event: Event.deleteAccountFail(error: error))

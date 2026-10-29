@@ -9,6 +9,7 @@ import SwiftUI
 @MainActor
 protocol WelcomeInteractor {
     func trackEvent(event: LoggableEvent)
+    func updateViewState(showTabBarView: Bool)
 }
 
 extension CoreInteractor: WelcomeInteractor { }
@@ -32,14 +33,14 @@ class WelcomeViewModel {
         path.append(.introView)
     }
         
-    func handleDidSignIn(isNewUser: Bool, onShowTabBarView: () -> Void) {
+    func handleDidSignIn(isNewUser: Bool) {
         interactor.trackEvent(event: Event.didSignIn(isNewUser: isNewUser))
         
         if isNewUser {
             // Do nothing, user goes through onboarding
         } else {
             // Push into tabbar view
-            onShowTabBarView()
+            interactor.updateViewState(showTabBarView: true)
         }
     }
     
