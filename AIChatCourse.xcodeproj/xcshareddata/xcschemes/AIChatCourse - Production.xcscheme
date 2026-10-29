@@ -35,28 +35,6 @@
             parallelizable = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "02AAF65B2CB1BF3E008A4173"
-               BuildableName = "AIChatCourseUITests.xctest"
-               BlueprintName = "AIChatCourseUITests"
-               ReferencedContainer = "container:AIChatCourse.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "02AAF6512CB1BF3E008A4173"
-               BuildableName = "AIChatCourseTests.xctest"
-               BlueprintName = "AIChatCourseTests"
-               ReferencedContainer = "container:AIChatCourse.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO"
-            parallelizable = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "02EA71F92CD74FDB00E1A482"
                BuildableName = "AIChatCourseTests2.xctest"
                BlueprintName = "AIChatCourseTests2"

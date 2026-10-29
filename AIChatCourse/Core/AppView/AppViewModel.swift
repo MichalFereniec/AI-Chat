@@ -31,7 +31,7 @@ class AppViewModel {
     func showATTPromptIfNeeded() async {
         #if !DEBUG
         let status = await AppTrackingTransparencyHelper.requestTrackingAuthorization()
-        logManager.trackEvent(event: Event.attStatus(dict: status.eventParameters))
+        interactor.trackEvent(event: Event.attStatus(dict: status.eventParameters))
         #endif
     }
     
